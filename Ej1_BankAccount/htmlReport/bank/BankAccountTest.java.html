@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BankAccountTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BankAccountTest Coverage Results</a> &gt; <a href="index.source.html" class="el_package">bank</a> &gt; <span class="el_source">BankAccountTest.java</span></div><h1>BankAccountTest.java</h1><pre class="source lang-java linenums">package bank;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+<span class="fc" id="L8">public class BankAccountTest {</span>
+
+    private BankAccount account;
+
+    @BeforeEach
+    public void setup(){
+<span class="fc" id="L14">        account = new BankAccount(100);</span>
+<span class="fc" id="L15">    }</span>
+
+    @Test
+    public void Withdraw_SufficientMoney_ReturnsTrue(){
+<span class="fc" id="L19">        int amount = 50;</span>
+
+<span class="fc" id="L21">        boolean res = account.withdraw(amount);</span>
+
+<span class="fc" id="L23">        assertTrue(res);</span>
+<span class="fc" id="L24">    }</span>
+
+    @Test
+    public void Withdraw_InsufficientMoney_ReturnsFalse(){
+<span class="fc" id="L28">        int amount = 150;</span>
+
+<span class="fc" id="L30">        boolean res = account.withdraw(amount);</span>
+
+<span class="fc" id="L32">        assertFalse(res);</span>
+<span class="fc" id="L33">    }</span>
+
+    @Test
+    public void Deposit_PositiveAmount_ReturnsSum(){
+<span class="fc" id="L37">        int amount = 100;</span>
+
+<span class="fc" id="L39">        int expected_sum = account.getBalance() + amount;</span>
+<span class="fc" id="L40">        int res_sum = account.deposit(amount);</span>
+
+<span class="fc" id="L42">        assertEquals(expected_sum,res_sum);</span>
+<span class="fc" id="L43">    }</span>
+
+    @Test
+    public void Deposit_NegativeAmount_ThrowsIllegalArgumentException(){
+<span class="fc" id="L47">        int amount = -100;</span>
+
+<span class="fc" id="L49">        assertThrows(IllegalArgumentException.class,() -&gt; {</span>
+<span class="nc" id="L50">            account.deposit(amount);</span>
+<span class="nc" id="L51">        });</span>
+<span class="fc" id="L52">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
