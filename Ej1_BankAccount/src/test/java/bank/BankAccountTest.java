@@ -1,7 +1,6 @@
 package bank;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,7 +17,6 @@ public class BankAccountTest {
     }
 
     @Test
-    @DisplayName("Withdrawing less/equal money than current balance")
     public void Withdraw_SufficientMoney_ReturnsTrue() {
         int amount = 50;
 
