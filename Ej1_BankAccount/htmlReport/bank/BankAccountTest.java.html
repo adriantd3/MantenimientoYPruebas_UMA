@@ -3,84 +3,143 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-<span class="fc" id="L9">public class BankAccountTest {</span>
+<span class="fc" id="L12">public class BankAccountTest {</span>
 
     private BankAccount account;
     private int startingBalance;
 
     @BeforeEach
     public void setup() {
-<span class="fc" id="L16">        startingBalance = 100;</span>
-<span class="fc" id="L17">        account = new BankAccount(startingBalance);</span>
-<span class="fc" id="L18">    }</span>
+<span class="fc" id="L19">        startingBalance = 100;</span>
+<span class="fc" id="L20">        account = new BankAccount(startingBalance);</span>
+<span class="fc" id="L21">    }</span>
 
     @Test
-    @DisplayName(&quot;Withdrawing less/equal money than current balance&quot;)
+    @DisplayName(&quot;Withdraw of less money than current balance&quot;)
     public void Withdraw_SufficientMoney_ReturnsTrue() {
-<span class="fc" id="L23">        int amount = 50;</span>
+<span class="fc" id="L26">        int amount = 50;</span>
 
-<span class="fc" id="L25">        boolean res = account.withdraw(amount);</span>
+<span class="fc" id="L28">        boolean res = account.withdraw(amount);</span>
 
-<span class="fc" id="L27">        assertTrue(res);</span>
-<span class="fc" id="L28">    }</span>
+<span class="fc" id="L30">        assertTrue(res);</span>
+<span class="fc" id="L31">    }</span>
 
     @Test
+    @DisplayName(&quot;Withdraw of more money than current balance&quot;)
     public void Withdraw_InsufficientMoney_ReturnsFalse() {
-<span class="fc" id="L32">        int amount = 150;</span>
+<span class="fc" id="L36">        int amount = 150;</span>
 
-<span class="fc" id="L34">        boolean res = account.withdraw(amount);</span>
+<span class="fc" id="L38">        boolean res = account.withdraw(amount);</span>
 
-<span class="fc" id="L36">        assertFalse(res);</span>
-<span class="fc" id="L37">    }</span>
+<span class="fc" id="L40">        assertFalse(res);</span>
+<span class="fc" id="L41">    }</span>
 
     @Test
+    @DisplayName(&quot;Withdraw of negative number&quot;)
+    public void Withdraw_NegativeAmount_ThrowsIllegalArgumentException() {
+<span class="fc" id="L46">        int amount = -100;</span>
+
+<span class="fc" id="L48">        assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L49">            account.withdraw(amount);</span>
+<span class="nc" id="L50">        });</span>
+<span class="fc" id="L51">    }</span>
+
+    @Test
+    @DisplayName(&quot;Deposit of positive amount returns the sum of balance and amount&quot;)
     public void Deposit_PositiveAmount_ReturnsSum() {
-<span class="fc" id="L41">        int amount = 100;</span>
-<span class="fc" id="L42">        int expected_sum = account.getBalance() + amount;</span>
+<span class="fc" id="L56">        int amount = 100;</span>
+<span class="fc" id="L57">        int expected_sum = account.getBalance() + amount;</span>
 
-<span class="fc" id="L44">        int res_sum = account.deposit(amount);</span>
+<span class="fc" id="L59">        int res_sum = account.deposit(amount);</span>
 
-<span class="fc" id="L46">        assertEquals(expected_sum, res_sum);</span>
-<span class="fc" id="L47">    }</span>
+<span class="fc" id="L61">        assertEquals(expected_sum, res_sum);</span>
+<span class="fc" id="L62">    }</span>
 
     @Test
+    @DisplayName(&quot;Deposit of negative amount throws and IllegalArgumentException&quot;)
     public void Deposit_NegativeAmount_ThrowsIllegalArgumentException() {
-<span class="fc" id="L51">        int amount = -100;</span>
+<span class="fc" id="L67">        int amount = -100;</span>
 
-<span class="fc" id="L53">        assertThrows(IllegalArgumentException.class, () -&gt; {</span>
-<span class="nc" id="L54">            account.deposit(amount);</span>
-<span class="nc" id="L55">        });</span>
-<span class="fc" id="L56">    }</span>
-
-    @Test
-    public void Get_Balance_ReturnsBalance(){
-<span class="fc" id="L60">        assertEquals(startingBalance,account.getBalance());</span>
-<span class="fc" id="L61">    }</span>
+<span class="fc" id="L69">        assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L70">            account.deposit(amount);</span>
+<span class="nc" id="L71">        });</span>
+<span class="fc" id="L72">    }</span>
 
     @Test
-    public void Pending_ZeroMonths_ReturnsAmount(){
-<span class="fc" id="L65">        int months = 0;</span>
-<span class="fc" id="L66">        double amount = 100;</span>
+    @DisplayName(&quot;Method get returns the corresponding balance&quot;)
+    public void Get_Balance_ReturnsBalance() {
+<span class="fc" id="L77">        assertEquals(startingBalance, account.getBalance());</span>
+<span class="fc" id="L78">    }</span>
 
-<span class="fc" id="L68">        double res = account.pending(amount,0.001,12,months);</span>
-
-<span class="fc" id="L70">        assertEquals(res,amount);</span>
-<span class="fc" id="L71">    }</span>
+    @ParameterizedTest
+    @DisplayName(&quot;Payment of negative number inputs throws IllegalArgumentException&quot;)
+    @CsvSource({
+            &quot;-100.0,0.01,12&quot;,
+            &quot;100.0,-0.01,12&quot;,
+            &quot;100.0,0.01,-12&quot;
+    })
+    public void Payment_NegativeInputs_ThrowsIllegalArgumentException(double total_amount, double interest, int npayments){
+<span class="fc" id="L88">        assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L89">            account.payment(total_amount,interest,npayments);</span>
+<span class="nc" id="L90">        });</span>
+<span class="fc" id="L91">    }</span>
 
     @Test
-    public void Pending_RegularCase_ReturnsCorrectAmount(){
-<span class="fc" id="L75">        double total_amount =10000;</span>
-<span class="fc" id="L76">        double interest = 0.001;</span>
-<span class="fc" id="L77">        int months = 12;</span>
-<span class="fc" id="L78">        double expected_res = 8341.651389;</span>
+    @DisplayName(&quot;Payment of a known case returns correct amount&quot;)
+    public void Payment_RegularCase_ReturnsCorrectAmount(){
+<span class="fc" id="L96">        double total_amount =10000;</span>
+<span class="fc" id="L97">        double interest = 0.001;</span>
+<span class="fc" id="L98">        int months = 12;</span>
+<span class="fc" id="L99">        double expected_sum = 838.759926;</span>
 
-<span class="fc" id="L80">        double res = account.pending(total_amount,interest,months,2);</span>
+<span class="fc" id="L101">        double res_sum = account.payment(total_amount,interest,months);</span>
 
-<span class="fc" id="L82">        assertEquals(Math.round(expected_res),Math.round(res));</span>
-<span class="fc" id="L83">    }</span>
+<span class="fc" id="L103">        assertEquals(Math.round(expected_sum),Math.round(res_sum));</span>
+<span class="fc" id="L104">    }</span>
+
+    @ParameterizedTest
+    @DisplayName(&quot;Payment of negative number inputs throws IllegalArgumentException&quot;)
+    @CsvSource({
+            &quot;-100.0,0.01,12,2&quot;,
+            &quot;100.0,-0.01,12,2&quot;,
+            &quot;100.0,0.01,-12,2&quot;,
+            &quot;100.0,0.01,12,-2&quot;
+    })
+    public void Pending_NegativeInputs_ThrowsIllegalArgumentException(double amount, double inte, int npayments, int month){
+<span class="fc" id="L115">        assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L116">            account.pending(amount,inte,npayments,month);</span>
+<span class="nc" id="L117">        });</span>
+<span class="fc" id="L118">    }</span>
+
+    @Test
+    @DisplayName(&quot;Pending of zero months returns the input amount&quot;)
+    public void Pending_ZeroMonths_ReturnsAmount() {
+<span class="fc" id="L123">        int months = 0;</span>
+<span class="fc" id="L124">        double amount = 100;</span>
+
+<span class="fc" id="L126">        double res = account.pending(amount, 0.001, 12, months);</span>
+
+<span class="fc" id="L128">        assertEquals(res, amount);</span>
+<span class="fc" id="L129">    }</span>
+
+    @Test
+    @DisplayName(&quot;Pending of known case returns the correct amount&quot;)
+    public void Pending_RegularCase_ReturnsCorrectAmount() {
+<span class="fc" id="L134">        double total_amount = 10000;</span>
+<span class="fc" id="L135">        double interest = 0.001;</span>
+<span class="fc" id="L136">        int months = 12;</span>
+<span class="fc" id="L137">        double expected_res = 8341.651389;</span>
+
+<span class="fc" id="L139">        double res = account.pending(total_amount, interest, months, 2);</span>
+
+<span class="fc" id="L141">        assertEquals(Math.round(expected_res), Math.round(res));</span>
+<span class="fc" id="L142">    }</span>
 
 
 }
